@@ -1,0 +1,11 @@
+{
+  "version": "v3-full-scope",
+  "note": "Expanded from v1/v2's 19-prompt pilot to the originally proposed full scope. The 'misc' bucket was folded into its natural categories (parity_gen8, priority_arbiter4 -> combinational; gray_counter4 -> arithmetic; shift_register_piso -> interface) as a pure reorganization before any new prompts were added.",
+  "categories": {
+    "combinational": ["mux4to1", "priority_encoder8", "comparator4bit", "bcd_to_7seg", "parity_gen8", "priority_arbiter4", "decoder3to8", "full_adder1bit", "majority_vote3", "xor_parity_checker"],
+    "fsm": ["traffic_light", "sequence_detector_1011", "vending_machine", "moore_edge_detector", "mealy_edge_detector", "elevator_2floor", "mod4_up_down_counter_fsm", "one_shot_pulse_gen", "walking_1_pattern", "simple_alarm_fsm"],
+    "arithmetic": ["ripple_carry_adder4", "bcd_adder", "lfsr8", "gray_counter4", "subtractor4bit_2comp", "incrementer4bit", "multiplier4x4_shiftadd", "bin_to_bcd_2digit", "saturating_counter4", "sign_magnitude_adder4"],
+    "memory": ["sync_regfile_4x8", "dual_port_ram", "single_port_rom_16x8", "lifo_stack_8x8", "byte_enable_ram_16x8", "shadow_register_pair", "dual_read_port_regfile_8x8", "circular_buffer_pointer_8x8"],
+    "interface": ["uart_tx", "spi_shift_reg", "sync_fifo_8x8", "shift_register_piso", "cdc_synchronizer_2ff", "button_debouncer", "simple_spi_master", "one_pulse_edge_detector_io"]
+  }
+}

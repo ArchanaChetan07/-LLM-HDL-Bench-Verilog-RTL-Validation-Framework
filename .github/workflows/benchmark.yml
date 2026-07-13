@@ -1,0 +1,45 @@
+name: LLM-HDL-Bench
+
+on:
+  push:
+    paths:
+      - "prompts/**"
+      - "testbenches/**"
+      - "generated/**"
+      - "pipeline/**"
+      - ".github/workflows/benchmark.yml"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  run-benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y yosys iverilog
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Harness self-tests (pipeline logic, not the RTL under test)
+        run: python3 pipeline/test_pipeline.py -v
+
+      - name: Run full benchmark pipeline
+        run: python3 pipeline/run_all.py
+
+      - name: Upload results DB + report as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: llm-hdl-bench-results
+          path: |
+            results_db/results.db
+            reports/VALIDATION_REPORT.md
+
+      - name: Print report to job summary
+        run: cat reports/VALIDATION_REPORT.md >> $GITHUB_STEP_SUMMARY

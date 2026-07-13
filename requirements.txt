@@ -1,0 +1,5 @@
+# Pipeline uses only the Python standard library (sqlite3, subprocess, json, re,
+# tempfile). No third-party Python dependencies. Pinned here anyway so the file
+# exists as an explicit "there are no hidden deps" statement, and as a place to
+# add pytest if/when pipeline unit tests grow beyond pipeline/test_pipeline.py's
+# current stdlib-only scope.

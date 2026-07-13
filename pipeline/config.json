@@ -1,0 +1,13 @@
+{
+  "generation_config": {
+    "model": "claude-generation-under-test",
+    "note": "RTL generated single-pass, no retries, no post-hoc fixes. Each module written once from its prompt spec alone, without consulting the paired testbench.",
+    "temperature": "n/a (single deterministic pass per prompt)",
+    "system_prompt": "You are an expert Verilog RTL designer. Given a module specification, write a single synthesizable Verilog module implementing exactly the described interface and behavior. Output only the Verilog module code."
+  },
+  "toolchain": {
+    "yosys_version": "0.33",
+    "iverilog_version": "12.0 (stable)"
+  },
+  "synth_target": "generic (no specific FPGA/ASIC cell library; synth -top <module> for synthesizability + warnings only)"
+}
