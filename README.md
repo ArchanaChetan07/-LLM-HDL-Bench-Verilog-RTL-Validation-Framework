@@ -1,100 +1,91 @@
-# -LLM-HDL-Bench-Verilog-RTL-Validation-Framework
+# LLM HDL Bench — Verilog RTL Validation Framework
 
-Python · SystemVerilog · Verilog · RTL · UVM · EDA · Verilator · Yosys · LLM · CI/CD · simulation. 46/46 (100%) post-fix; unassisted 44/46; 5 RTL categories; 201 repo files. Hardware/EDA + LLM evaluation for RTL correctness and verification workflows.
+### Honest LLM RTL benchmark — 46 SystemVerilog prompts × 5 categories, Yosys + Icarus, v4 post-fix 46/46
 
-## Results (numbers)
+[![CI](https://github.com/ArchanaChetan07/-LLM-HDL-Bench-Verilog-RTL-Validation-Framework/actions/workflows/ci.yml/badge.svg)](https://github.com/ArchanaChetan07/-LLM-HDL-Bench-Verilog-RTL-Validation-Framework/actions/workflows/ci.yml)
+[![Verilog](https://img.shields.io/badge/SystemVerilog-46%20prompts-8A2BE2)](prompts/manifest.json)
+[![Python](https://img.shields.io/badge/pipeline-7%20modules-3776AB?logo=python&logoColor=white)](pipeline/)
+[![Tests](https://img.shields.io/badge/pipeline%20tests-9%20OK-1f8a4c)](pipeline/test_pipeline.py)
+[![License](https://img.shields.io/badge/license-see%20repo-2d3748)](#license)
 
-| Metric | Value |
+Reproducible **LLM-generated RTL validation harness**: 46 prompts across combinational, FSM, arithmetic, memory, and interface categories; lint → Yosys synthesis → Icarus simulation pipeline with SQLite result tracking and an honest report separating **post-fix pass rate** from **unassisted first-pass** baselines.
+
+---
+
+## Key Results
+
+| Metric | Value | Source |
+|---|---|---|
+| RTL prompts | **46** | `prompts/manifest.json` |
+| Categories | **5** (10+10+10+8+8) | same manifest |
+| Testbenches | **46** `.v` files | `testbenches/` |
+| v4 post-fix pass rate | **46/46 (100%)** | `reports/VALIDATION_REPORT.md` |
+| All-unassisted baseline | **44/46** | same report (v1 pilot 18/19 + v3 new 26/27) |
+| v3 unassisted (27 new modules) | **26/27 (97.8%)** | report history table |
+| Pipeline Python modules | **7** | `pipeline/` |
+| Pipeline unit tests | **9** passing | `pipeline/test_pipeline.py` |
+| Toolchain | **Yosys 0.33 + Icarus Verilog 12.0** | `reports/VALIDATION_REPORT.md` |
+| Docker | **Yes** | `Dockerfile` |
+| FastAPI / K8s / Prometheus | **None** | not present in repo |
+
+---
+
+## Architecture
+
+```mermaid
+flowchart TB
+    MAN[prompts/manifest.json 46 prompts] --> GEN[LLM-generated RTL .v]
+    GEN --> LINT[Icarus lint]
+    LINT --> SYN[Yosys synthesis + latch check]
+    SYN --> SIM[Icarus simulation vs testbench]
+    SIM --> CAT[categorize.py verdict]
+    CAT --> DB[SQLite results DB]
+    DB --> RPT[generate_report.py VALIDATION_REPORT.md]
+    CAT --> FAIL{syntax / sim_mismatch / latch / timeout}
+```
+
+**How it works:** `pipeline/run_all.py` orchestrates lint, synthesis (`run_synth.py`), and simulation (`run_sim.py`) for each manifest entry. `categorize.py` assigns verdicts (PASS, syntax_error, sim_mismatch, sim_timeout, etc.). `generate_report.py` writes an honest markdown report with separate post-fix and unassisted baselines. `test_pipeline.py` guards pipeline logic (e.g., PROC_DLATCH false-positive regression).
+
+---
+
+## Tech Stack
+
+| Layer | Choice |
 |---|---|
-| Tracked repository files | **201** |
-| Python modules | **7** |
-| Notebooks | **0** |
-| Markdown docs | **48** |
-| CI workflows present | **Yes** |
-| Automated tests present | **Yes** |
-| Project highlights | **46/46 (100%) post-fix; unassisted 44/46; 5 RTL categories; 201 repo files** |
+| HDL | SystemVerilog / Verilog RTL + testbenches |
+| EDA | Yosys (synthesis), Icarus Verilog (lint + sim) |
+| Orchestration | Python 3 pipeline + SQLite |
+| CI | GitHub Actions |
+| Container | Docker (toolchain packaging) |
 
-## Tech stack
+---
 
-- **Primary language:** Verilog
-- **Languages (GitHub):** Verilog (100529 bytes), Python (31538 bytes), Dockerfile (386 bytes)
-- **Focus area:** chip
-- **Tooling keywords:** Python, machine-learning, CI/CD, API, Docker, Kubernetes, FastAPI, Prometheus, testing, automation, MLOps, LLM
+## Installation & Usage
 
-## Architecture (logical)
-
-\\	ext
-Inputs → Processing / models / agents → Evaluation & metrics → CI checks → Artifacts
-\
-## Engineering practices
-
-1. Reproducible layout with clear module boundaries  
-2. Automated validation via CI and/or tests when present  
-3. Documentation that states measurable outcomes, not slogans  
-4. Skill surface aligned to common JD keywords: Python, machine learning, NLP/LLM, Kubernetes, Docker, observability, data pipelines  
-
-## Quick start
-
-\\ash
+```bash
 git clone https://github.com/ArchanaChetan07/-LLM-HDL-Bench-Verilog-RTL-Validation-Framework.git
 cd -LLM-HDL-Bench-Verilog-RTL-Validation-Framework
-# Install project requirements (see requirements.txt / pyproject.toml / environment files if present)
-# Run tests or main entrypoints documented in this repo
-\
-## Skills demonstrated
+python pipeline/test_pipeline.py
+python pipeline/run_all.py    # requires Yosys + iverilog on PATH
+python pipeline/generate_report.py
+```
 
-Python · machine-learning · CI/CD · API design · testing · automation · Docker · Kubernetes · FastAPI · Prometheus · data-science · LLM · MLOps · software-engineering · benchmarking · observability
+Generated RTL lives under `generated/`; prompts and reference testbenches are versioned under `prompts/` and `testbenches/`.
 
-## License / notice
+---
 
-See repository license file if present. Metrics above are derived from repository structure and previously published validation notes where available.
+## Category Breakdown
 
+| Category | Prompts | Examples |
+|---|---|---|
+| combinational | 10 | mux4to1, priority_encoder8, bcd_to_7seg |
+| fsm | 10 | traffic_light, vending_machine, sequence_detector_1011 |
+| arithmetic | 10 | ripple_carry_adder4, lfsr8, sign_magnitude_adder4 |
+| memory | 8 | sync_regfile_4x8, dual_port_ram, lifo_stack_8x8 |
+| interface | 8 | uart_tx, sync_fifo_8x8, cdc_synchronizer_2ff |
 
-### Extended notes
+---
 
-This section expands documentation for completeness: reproducibility, keyword coverage for Python, machine-learning, CI/CD, API, Docker, Kubernetes, FastAPI, Prometheus, testing, automation, MLOps, LLM, data-science, software-engineering, benchmarking, and observability practices used across the portfolio.
+## License
 
-
-### Extended notes
-
-This section expands documentation for completeness: reproducibility, keyword coverage for Python, machine-learning, CI/CD, API, Docker, Kubernetes, FastAPI, Prometheus, testing, automation, MLOps, LLM, data-science, software-engineering, benchmarking, and observability practices used across the portfolio.
-
-
-### Extended notes
-
-This section expands documentation for completeness: reproducibility, keyword coverage for Python, machine-learning, CI/CD, API, Docker, Kubernetes, FastAPI, Prometheus, testing, automation, MLOps, LLM, data-science, software-engineering, benchmarking, and observability practices used across the portfolio.
-
-
-### Extended notes
-
-This section expands documentation for completeness: reproducibility, keyword coverage for Python, machine-learning, CI/CD, API, Docker, Kubernetes, FastAPI, Prometheus, testing, automation, MLOps, LLM, data-science, software-engineering, benchmarking, and observability practices used across the portfolio.
-
-
-### Extended notes
-
-This section expands documentation for completeness: reproducibility, keyword coverage for Python, machine-learning, CI/CD, API, Docker, Kubernetes, FastAPI, Prometheus, testing, automation, MLOps, LLM, data-science, software-engineering, benchmarking, and observability practices used across the portfolio.
-
-
-### Extended notes
-
-This section expands documentation for completeness: reproducibility, keyword coverage for Python, machine-learning, CI/CD, API, Docker, Kubernetes, FastAPI, Prometheus, testing, automation, MLOps, LLM, data-science, software-engineering, benchmarking, and observability practices used across the portfolio.
-
-
-### Extended notes
-
-This section expands documentation for completeness: reproducibility, keyword coverage for Python, machine-learning, CI/CD, API, Docker, Kubernetes, FastAPI, Prometheus, testing, automation, MLOps, LLM, data-science, software-engineering, benchmarking, and observability practices used across the portfolio.
-
-
-### Extended notes
-
-This section expands documentation for completeness: reproducibility, keyword coverage for Python, machine-learning, CI/CD, API, Docker, Kubernetes, FastAPI, Prometheus, testing, automation, MLOps, LLM, data-science, software-engineering, benchmarking, and observability practices used across the portfolio.
-
-
-### Extended notes
-
-This section expands documentation for completeness: reproducibility, keyword coverage for Python, machine-learning, CI/CD, API, Docker, Kubernetes, FastAPI, Prometheus, testing, automation, MLOps, LLM, data-science, software-engineering, benchmarking, and observability practices used across the portfolio.
-
-
-### Extended notes
-
-This section expands documentation for completeness: reproducibility, keyword coverage for Python, machine-learning, CI/CD, API, Docker, Kubernetes, FastAPI, Prometheus, testing, automation, MLOps, LLM, data-science, software-engineering, benchmarking, and observability practices used across the portfolio.
+See repository license file if present.
