@@ -7,9 +7,11 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends yosys iverilog python3 git && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    yosys -V && iverilog -V
 
 WORKDIR /bench
 COPY . /bench
 
+# Default: full 46-module lint/synth/sim harness
 CMD ["python3", "pipeline/run_all.py"]
