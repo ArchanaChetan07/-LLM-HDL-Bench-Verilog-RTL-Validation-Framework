@@ -1,13 +1,14 @@
 {
   "generation_config": {
     "model": "claude-generation-under-test",
-    "note": "RTL generated single-pass, no retries, no post-hoc fixes. Each module written once from its prompt spec alone, without consulting the paired testbench.",
-    "temperature": "n/a (single deterministic pass per prompt)",
+    "note": "Original generation was single-pass per prompt (no LLM retry loop, testbenches not consulted during generation). The checked-in generated/ corpus for v4 includes a human-applied edge-case fix to sign_magnitude_adder4 after a confirmed sim mismatch; see pipeline/measure_pre_fix_delta.py and VALIDATION_REPORT.md. This is NOT an automated LLM self-correction / tool-feedback loop.",
+    "temperature": "n/a (single deterministic pass per prompt at generation time)",
     "system_prompt": "You are an expert Verilog RTL designer. Given a module specification, write a single synthesizable Verilog module implementing exactly the described interface and behavior. Output only the Verilog module code."
   },
   "toolchain": {
     "yosys_version": "0.33",
-    "iverilog_version": "12.0 (stable)"
+    "iverilog_version": "12.0 (stable)",
+    "verified_this_session": "Ubuntu 24.04 apt packages — Yosys 0.33 (git sha1 2584903a060), Icarus Verilog 12.0 (stable)"
   },
   "synth_target": "generic (no specific FPGA/ASIC cell library; synth -top <module> for synthesizability + warnings only)"
 }

@@ -124,16 +124,20 @@ def main():
             lines.append("")
     lines.append("")
 
-    lines.append("## Changelog: v3 -> v4 (this run) -- Bug-Fix Pass")
+    lines.append("## Changelog: v3 -> v4 (this run) -- Human Bug-Fix Pass")
     lines.append("")
     lines.append("v3 left one confirmed sim-mismatch live: `sign_magnitude_adder4` returned "
                   "`sign_a` instead of `+0` when equal magnitudes canceled under opposite signs. "
-                  "v4 applies that single edge-case fix (matching the reference implementation and "
-                  "prompt) and re-runs the full 46-module harness.")
+                  "v4 applies that single **human-applied** edge-case fix (matching the reference "
+                  "implementation and prompt) and re-runs the full 46-module harness. "
+                  "This is **not** an automated LLM self-correction / tool-feedback loop.")
     lines.append("")
     lines.append("**Result of this run:** see headline numbers above (expect **46/46** after the fix). "
-                  "The unassisted-only baselines remain: v3 raw first-pass on the 27 new modules "
-                  "was 26/27; all-unassisted across 46 prompts remains **44/46**.")
+                  "Recoverable pre-fix delta (revert that one edit via "
+                  "`pipeline/measure_pre_fix_delta.py`): **45/46**. "
+                  "A historical composite 'all-unassisted' **44/46** was documented from earlier "
+                  "versioned runs whose commits are not in this repository and is not re-claimed "
+                  "as a freshly measured number unless those sources are restored.")
     lines.append("")
     lines.append("**Still disclosed from prior runs:** `circular_buffer_pointer_8x8` was suspected "
                   "of a double pointer advance, then retracted -- repeated nonblocking assigns to "
@@ -149,20 +153,20 @@ def main():
     lines.append("| v3 | 46 prompts (full scope), unassisted on the 27 new modules | 45/46 (97.8%) | prior |")
     lines.append("| v4 (this run) | 46 prompts, after sign_magnitude_adder4 edge-case fix | see headline | current |")
     lines.append("")
-    lines.append("v4 is an iteration pass on the one remaining v3 bug. Unassisted-only numbers from "
-                  "earlier runs are preserved in the history table so a post-fix 46/46 is not "
-                  "mistaken for a raw first-pass result.")
+    lines.append("v4 is an iteration pass on the one remaining v3 bug via a **human-applied** "
+                  "edge-case edit (not an LLM self-repair loop). History rows for v1–v3 SHAs that "
+                  "are absent from this repository are retained as documentation only.")
     lines.append("")
 
     lines.append("## Known Limitations (carried forward + updated)")
     lines.append("")
     lines.append("- **Full scope reached.** 46 prompts across 5 categories, matching the originally "
                   "proposed 40-50 target -- this is no longer described as a pilot.")
-    lines.append("- **Post-fix headline vs unassisted baseline.** This v4 run reports the "
-                  "post-fix state (pilot modules already at v2 fixed, plus "
-                  "`sign_magnitude_adder4` fixed). An all-unassisted number across 46 prompts "
-                  "remains **44/46** (v1's 18/19 pilot + v3's 26/27 new). Both numbers are "
-                  "legitimate; they answer different questions.")
+    lines.append("- **Post-fix vs pre-fix (session-verifiable).** Current `generated/` is the "
+                  "human post-fix corpus (**46/46**). Reverting the `sign_magnitude_adder4` edit "
+                  "yields **45/46**. A historical composite **44/46** appeared in older notes "
+                  "(v1 18/19 + v3-new 26/27) but those earlier commits are not in this repo, so "
+                  "44/46 is not re-asserted as freshly measured.")
     lines.append("- **One tooling bug found and fixed during the v1 run:** a false-positive latch-"
                   "detection regex matched Yosys's internal pass name rather than real warnings. "
                   "Fixed before v1's results were generated; unaffected by later runs.")

@@ -1,0 +1,2 @@
+Yosys 0.33 (git sha1 2584903a060)
+Icarus Verilog version 12.0 (stable) ()
